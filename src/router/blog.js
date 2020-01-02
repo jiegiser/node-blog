@@ -3,11 +3,11 @@
  * @Author: jiegiser
  * @Date: 2019-12-30 19:11:53
  * @LastEditors  : jiegiser
- * @LastEditTime : 2019-12-31 08:54:07
+ * @LastEditTime : 2020-01-02 08:00:55
  */
 
 
-const { getList } = require('../controller/blog')
+const { getList, getDetail } = require('../controller/blog')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 const handleBlogROuter = (req, res) => {
   const method = req.method
@@ -21,9 +21,9 @@ const handleBlogROuter = (req, res) => {
     return new SuccessModel(listData)
   }
   if (method === 'GET' && req.path === '/api/blog/detail') {
-    return {
-      msg: 'blog详情'
-    }
+    const id = req.query.id
+    const data = getDetail(id)
+    return new SuccessModel(data)
   }
   
   // 新建博客

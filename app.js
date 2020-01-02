@@ -3,12 +3,40 @@
  * @Author: jiegiser
  * @Date: 2019-12-30 18:31:34
  * @LastEditors  : jiegiser
- * @LastEditTime : 2019-12-31 08:45:15
+ * @LastEditTime : 2020-01-02 08:47:01
  */
 
 const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
+
+// 处理postData
+const getPostData = (req) => {
+  const promise = new Promise((resolve, reject) => {
+    if(req.method !== 'POST') {
+      resolve({})
+      return
+    }
+    if(req.headers['content-type'] !== 'application/json') {
+      resolve({})
+      return
+    }
+    let postData = ''
+    req.on('data', chunk => {
+      postData += chunk.toString()
+    })
+    req.on('end', () => {
+      if(!postData) {
+        resolve({})
+        return
+      }
+      resolve(
+        JSON.parse(postData)
+      )
+    })
+  })
+  return promise
+}
 const serverHandle = (req, res) => {
   // 设置返回格式 JSON
   res.setHeader('Content-type', 'application/json')
@@ -16,7 +44,12 @@ const serverHandle = (req, res) => {
   // 获取path
   const url = req.url
   req.path = url.split('?')[0]
-  
+
+  // 处理post data
+  getPostData(req).then(postData => {
+    req.body = postData
+  })
+
   // 获取参数
   req.query = querystring.parse(url.split('?')[1])
 
