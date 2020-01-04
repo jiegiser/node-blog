@@ -3,25 +3,21 @@
  * @Author: jiegiser
  * @Date: 2019-12-31 08:45:44
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-03 08:10:29
+ * @LastEditTime : 2020-01-04 14:59:17
  */
+
+const { exec } = require('../db/mysql')
 const getList = (auth, keyword) => {
-  return [
-    {
-      id: 1,
-      title: 'title',
-      content: 'content',
-      createTime: 1577753282485,
-      author: 'jiegiser'
-    },
-    {
-      id: 2,
-      title: 'title',
-      content: 'content',
-      createTime: 1577753282485,
-      author: 'jiegiser'
-    }
-  ]
+  let sql = `select * from blogs where 1 = 1 `
+  if(auth) {
+    sql += `and author = '${auth}' `
+  }
+  if(keyword) {
+    sql += `and title like '%${keyword}%' `
+  }
+  sql += `order by createtime desc;`
+  // 返回promise对象
+  return exec(sql)
 }
 
 const getDetail = (id) => {

@@ -3,7 +3,7 @@
  * @Author: jiegiser
  * @Date: 2019-12-30 19:11:53
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-03 08:11:12
+ * @LastEditTime : 2020-01-04 15:05:05
  */
 
 
@@ -17,9 +17,12 @@ const handleBlogROuter = (req, res) => {
   if (method === 'GET' && req.path === '/api/blog/list') {
     const author = req.query.author || ''
     const keyword = req.query.keyword || ''
-    const listData = getList(author, keyword)
-
-    return new SuccessModel(listData)
+    // const listData = getList(author, keyword)
+    // return new SuccessModel(listData)
+    const result = getList(author, keyword)
+    return result.then(listData => {
+      return new SuccessModel(listData)
+    })
   }
   if (method === 'GET' && req.path === '/api/blog/detail') {
     const data = getDetail(id)

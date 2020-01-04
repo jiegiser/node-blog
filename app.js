@@ -3,7 +3,7 @@
  * @Author: jiegiser
  * @Date: 2019-12-30 18:31:34
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-03 07:54:49
+ * @LastEditTime : 2020-01-04 15:07:04
  */
 
 const querystring = require('querystring')
@@ -52,11 +52,20 @@ const serverHandle = (req, res) => {
   getPostData(req).then(postData => {
     req.body = postData
     // 处理blog路由
-    const blogData = handleBlogRouter(req, res)
-    if(blogData) {
-      res.end(
-        JSON.stringify(blogData)
-      )
+    // const blogData = handleBlogRouter(req, res)
+    // if(blogData) {
+    //   res.end(
+    //     JSON.stringify(blogData)
+    //   )
+    //   return
+    // }
+    const blogReault = handleBlogRouter(req, res)
+    if(blogReault) {
+      blogReault.then(blogData => {
+        res.end(
+          JSON.stringify(blogData)
+        )
+      })
       return
     }
     // 处理user路由
