@@ -3,7 +3,7 @@
  * @Author: jiegiser
  * @Date: 2019-12-31 08:45:44
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-04 14:59:17
+ * @LastEditTime : 2020-01-06 09:03:37
  */
 
 const { exec } = require('../db/mysql')
@@ -21,29 +21,50 @@ const getList = (auth, keyword) => {
 }
 
 const getDetail = (id) => {
-  return {
-    id: 1,
-    title: 'title',
-    content: 'content',
-    createTime: 1577753282485,
-    author: 'jiegiser'
-  }
+  const sql = `select * from blogs where id = '${id}'`
+  return exec(sql).then(rows => {
+    return rows[0]
+  })
 }
 const newBlog = (blogData = {}) => {
-  console.log(blogData)
-  // blogData是一个博客对象
-  return {
-    id: 3
-  }
+  const title = blogData.title
+  const content = blogData.content
+  const author = blogData.author
+  const createTime = Date.now()
+
+  const sql = `
+    insert into blogs (title, content, createtime, author)
+    values ('${title}', '${content}', '${createTime}', '${author}');
+  `
+  return exec(sql).then(insertData => {
+    return {
+      id: insertData.insertId
+    }
+  })
 }
 
 const updateBlog = (id, blogData = {}) => {
   // id为要更新博客的id
-  console.log('id', id)
-  return true
+  const title = blogData.title
+  const content = blogData.content
+  const sql = `
+    update blogs set title = '${title}', content = '${content}' where id = ${id}
+  `
+  return exec(sql).then(updateData => {
+    if(updateData.affectedRows > 0) {
+      return true
+    }
+    return false
+  })
 }
-const delBlog = (id) => {
-  return true
+const delBlog = (id, author) => {
+  const sql = `delete from blogs where id = '${id}' and author='${author}'`
+  return exec(sql).then(delData => {
+    if(delData.affectedRows > 0) {
+      return true
+    }
+    return false
+  })
 }
 module.exports = { 
   getList,

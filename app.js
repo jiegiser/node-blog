@@ -3,7 +3,7 @@
  * @Author: jiegiser
  * @Date: 2019-12-30 18:31:34
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-04 15:07:04
+ * @LastEditTime : 2020-01-06 09:29:02
  */
 
 const querystring = require('querystring')
@@ -69,14 +69,24 @@ const serverHandle = (req, res) => {
       return
     }
     // 处理user路由
-    const userData = handleUserRouter(req, res)
-    if(userData) {
-      res.end(
-        JSON.stringify(userData)
-      )
+    // const userData = handleUserRouter(req, res)
+    // if(userData) {
+    //   res.end(
+    //     JSON.stringify(userData)
+    //   )
+    //   return
+    // }
+
+    const userResult = handleUserRouter(req, res)
+    if(userResult) {
+      userResult.then(userData => {
+        res.end(
+          JSON.stringify(userData)
+        )
+      })
       return
     }
-  
+
     // 404--text/plain纯文本
     res.writeHead(404, {'Content-type': 'text/plain'})
     res.write('404 Not Found\n')
