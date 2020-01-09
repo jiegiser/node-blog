@@ -3,13 +3,13 @@
  * @Author: jiegiser
  * @Date: 2019-12-30 18:31:34
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-08 09:22:12
+ * @LastEditTime : 2020-01-09 09:10:07
  */
 
 const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
-
+const { get, set } = require('./src/db/redis')
 // session 数据
 const SESSION_DATA = {}
 
@@ -69,23 +69,23 @@ const serverHandle = (req, res) => {
     const val = arr[1].trim()
     req.cookie[key] = val
   })
-  // 解析session
-  console.log(Date.now(), SESSION_DATA)
+  // 解析session--处理redis
   let needSetCookie = false
   let userId = req.cookie.userid
-  console.log(userId)
-  if(userId) {
-    if(!SESSION_DATA[userId]) {
-      SESSION_DATA[userId] = {}
-    }
-  } else {
-    needSetCookie = true
+  if(!userId) {
     userId = `${Date.now()}_${Math.random()}`
-    SESSION_DATA[userId] = {}
+    needSetCookie = true
   }
-  console.log(SESSION_DATA[userId], 'SESSION_DATA[userId]')
-  req.session = SESSION_DATA[userId]
-  console.log(req.session, 'req.session')
+  req.sessionId = userId
+  get(req.sessionId).then(val => {
+    if(val === null) {
+      set(req.sessionId, {})
+      // 设置session
+      req.session = {}
+    } else {
+      req.session = val
+    }
+  })
   // 处理post data
   getPostData(req).then(postData => {
     req.body = postData
