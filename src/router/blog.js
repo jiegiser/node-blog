@@ -3,12 +3,21 @@
  * @Author: jiegiser
  * @Date: 2019-12-30 19:11:53
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-06 09:05:16
+ * @LastEditTime : 2020-01-13 07:49:05
  */
 
 
 const { getList, getDetail, newBlog, updateBlog, delBlog } = require('../controller/blog')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
+
+// 统一的登录验证函数
+const loginCheck = (req) => {
+  if(!req.session.username) {
+    return Promise.resolve(
+      new ErrorModel('尚未登录')
+    )
+  }
+}
 const handleBlogROuter = (req, res) => {
   const method = req.method
   const id = req.query.id
@@ -24,6 +33,7 @@ const handleBlogROuter = (req, res) => {
       return new SuccessModel(listData)
     })
   }
+  // 获取博客详情
   if (method === 'GET' && req.path === '/api/blog/detail') {
     // const data = getDetail(id)
     // return new SuccessModel(data)
@@ -38,8 +48,13 @@ const handleBlogROuter = (req, res) => {
     // const blogData = req.body
     // const data = newBlog(blogData)
     // return new SuccessModel(data)
-    const author = 'jiegiser'
-    req.body.author = author
+    // 检测是否登录
+    const loginCheckResult = loginCheck(req)
+    if(loginCheckResult) {
+      // 未登录
+      return loginCheck
+    }
+    req.body.author = req.session.username
     const result = newBlog(req.body)
     return result.then(data => {
       return new SuccessModel(data)
@@ -48,6 +63,12 @@ const handleBlogROuter = (req, res) => {
 
   // 更新博客
   if(method === 'POST' && req.path === '/api/blog/update') {
+    const loginCheckResult = loginCheck(req)
+    if(loginCheckResult) {
+      // 未登录
+      return loginCheck
+    }
+    
     const result = updateBlog(id, req.body)
     return result.then(val => {
       if(val) {
@@ -60,7 +81,12 @@ const handleBlogROuter = (req, res) => {
 
   // 删除博客
   if(method === 'POST' && req.path === '/api/blog/del') {
-    const author = 'jiegiser'
+    const loginCheckResult = loginCheck(req)
+    if(loginCheckResult) {
+      // 未登录
+      return loginCheck
+    }    
+    const author = req.session.username
     const result = delBlog(id, author)
     return result.then(val => {
       if(val) {
