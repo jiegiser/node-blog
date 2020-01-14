@@ -3,7 +3,7 @@
  * @Author: jiegiser
  * @Date: 2019-12-30 19:11:53
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-13 07:49:05
+ * @LastEditTime : 2020-01-14 08:07:35
  */
 
 
@@ -24,10 +24,25 @@ const handleBlogROuter = (req, res) => {
 
   //  获取博客列表
   if (method === 'GET' && req.path === '/api/blog/list') {
-    const author = req.query.author || ''
+    let author = req.query.author || ''
     const keyword = req.query.keyword || ''
     // const listData = getList(author, keyword)
     // return new SuccessModel(listData)
+
+    // 判断是否为admin用户
+    if(req.query.isadmin) {
+      // 管理员界面
+      const loginCheckResult = loginCheck(req)
+      if(loginCheckResult) {
+        // 未登录
+        return loginCheckResult
+      }
+      // 强制查询自己的博客
+      author = req.session.username
+    }
+
+
+
     const result = getList(author, keyword)
     return result.then(listData => {
       return new SuccessModel(listData)
@@ -52,7 +67,7 @@ const handleBlogROuter = (req, res) => {
     const loginCheckResult = loginCheck(req)
     if(loginCheckResult) {
       // 未登录
-      return loginCheck
+      return loginCheckResult
     }
     req.body.author = req.session.username
     const result = newBlog(req.body)
@@ -66,7 +81,7 @@ const handleBlogROuter = (req, res) => {
     const loginCheckResult = loginCheck(req)
     if(loginCheckResult) {
       // 未登录
-      return loginCheck
+      return loginCheckResult
     }
     
     const result = updateBlog(id, req.body)
@@ -84,7 +99,7 @@ const handleBlogROuter = (req, res) => {
     const loginCheckResult = loginCheck(req)
     if(loginCheckResult) {
       // 未登录
-      return loginCheck
+      return loginCheckResult
     }    
     const author = req.session.username
     const result = delBlog(id, author)

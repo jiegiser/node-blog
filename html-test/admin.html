@@ -1,0 +1,32 @@
+<!--
+ * @Descripttion: 
+ * @Author: jiegiser
+ * @Date: 2020-01-13 07:56:15
+ * @LastEditors: jiegiser
+ * @LastEditTime: 2020-01-14 09:00:14
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="getData()">huoqu</button>
+    <script>
+        function getData() {
+            // 增加isadmin=1
+            axios.get('/api/blog/list?isadmin=1')
+              .then(function (response) {
+                  console.log(response);
+              })
+              .catch(function (error) {
+                  console.log(error);
+              })
+        }
+    </script>
+</body>
+</html>
