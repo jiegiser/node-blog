@@ -3,13 +3,14 @@
  * @Author: jiegiser
  * @Date: 2019-12-30 18:31:34
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-09 09:10:07
+ * @LastEditTime : 2020-01-15 08:43:22
  */
 
 const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 const { get, set } = require('./src/db/redis')
+const { access } = require('./src/utils/log.js')
 // session 数据
 const SESSION_DATA = {}
 
@@ -47,6 +48,8 @@ const getPostData = (req) => {
   return promise
 }
 const serverHandle = (req, res) => {
+  // 记录 access log
+  access(`${req.method} -- ${req.url} -- ${req.headers['user-agent']} -- ${Date.now()}`)
   // 设置返回格式 JSON
   res.setHeader('Content-type', 'application/json')
 
