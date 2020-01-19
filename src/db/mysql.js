@@ -3,7 +3,7 @@
  * @Author: jiegiser
  * @Date: 2020-01-04 14:48:26
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-04 14:54:13
+ * @LastEditTime : 2020-01-19 08:17:25
  */
 const mysql = require('mysql')
 
@@ -30,5 +30,6 @@ function exec(sql) {
 }
 
 module.exports = {
-  exec
+  exec,
+  escape: mysql.escape
 }

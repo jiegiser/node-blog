@@ -3,9 +3,10 @@
  * @Author: jiegiser
  * @Date: 2019-12-31 08:45:44
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-06 09:03:37
+ * @LastEditTime : 2020-01-19 09:05:43
  */
-
+// 引入xss
+const xss = require('xss')
 const { exec } = require('../db/mysql')
 const getList = (auth, keyword) => {
   let sql = `select * from blogs where 1 = 1 `
@@ -27,7 +28,8 @@ const getDetail = (id) => {
   })
 }
 const newBlog = (blogData = {}) => {
-  const title = blogData.title
+  // 防止xss攻击
+  const title = xss(blogData.title)
   const content = blogData.content
   const author = blogData.author
   const createTime = Date.now()
