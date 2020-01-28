@@ -3,7 +3,7 @@
  * @Author: jiegiser
  * @Date: 2019-12-31 08:45:44
  * @LastEditors  : jiegiser
- * @LastEditTime : 2020-01-19 09:05:43
+ * @LastEditTime : 2020-01-28 11:10:41
  */
 // 引入xss
 const xss = require('xss')
@@ -30,7 +30,7 @@ const getDetail = (id) => {
 const newBlog = (blogData = {}) => {
   // 防止xss攻击
   const title = xss(blogData.title)
-  const content = blogData.content
+  const content = xss(blogData.content)
   const author = blogData.author
   const createTime = Date.now()
 
