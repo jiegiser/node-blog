@@ -20,5 +20,7 @@ values('标题1', '内容2', '1578118645718', 'lisi')
 select * from blogs
 
 select version()
+-- 出现更新数据提示有安全性问题
+SET SQL_SAFE_UPDATES = 0
 
  
